@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class UICardsController : MonoBehaviour
 {
     [SerializeField] private UICard uiCard;
-
+    [SerializeField] private GameObject closeButton;
     [SerializeField] private List<CardInfo> cardsList;
 
     private int cardIndex;
@@ -20,13 +20,20 @@ public class UICardsController : MonoBehaviour
     public void NextCard()
     {
         cardIndex++;
+        
+        if (cardIndex == cardsList.Count-1)
+            closeButton.SetActive(true);
+        
         if (cardIndex >= cardsList.Count)
-        {
             cardIndex--;
-        }
+        
         uiCard.Info = cardsList[cardIndex];
     }
 
+    public void CloseCardsPanel()
+    {
+        gameObject.SetActive(false);
+    }
     public void PrevCard()
     {
         cardIndex--;
