@@ -7,7 +7,7 @@ public class PathPoint : MonoBehaviour
     {
         TrafficLane trafficLane = GetComponentInParent<TrafficLane>();
         if (trafficLane)
-            trafficLane.AddCreatedPathPoint(transform);
+            trafficLane.UpdatePathPointsList();
     }
 #endif
 }

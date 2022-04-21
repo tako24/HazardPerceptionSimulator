@@ -9,7 +9,7 @@ public class TrafficLaneController : MonoBehaviour
     [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
 
     private CarController carController;
-    private Dictionary<TrafficLane, TrafficLaneTriggeredColliders> trafficLanesCollision = new ();
+    private Dictionary<TrafficLane, Collider> trafficLanesCollisions = new ();
     private Collider trafficLanesDetectionCollider;
 
     private void Start()
@@ -23,6 +23,13 @@ public class TrafficLaneController : MonoBehaviour
         trafficLanesDetectionCollider.enabled = !trafficLanesDetectionCollider.enabled;
     }
 
+    public Collider GetTrafficLaneCollider(TrafficLane trafficLane)
+    {
+        if (trafficLanesCollisions.ContainsKey(trafficLane))
+            return trafficLanesCollisions[trafficLane];
+        return null;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag(trafficLaneCollidersTag))
@@ -32,11 +39,10 @@ public class TrafficLaneController : MonoBehaviour
             if (carController.AheadTrafficLane == trafficLane)
                 return;
 
-            if (trafficLanesCollision.ContainsKey(trafficLane) == false)
-            {
-                trafficLanesCollision.Add(trafficLane, new TrafficLaneTriggeredColliders());
-            }
-            trafficLanesCollision[trafficLane].trafficLaneTriggeredColliders.Add(other);
+            if (trafficLanesCollisions.ContainsKey(trafficLane) == false)
+                trafficLanesCollisions.Add(trafficLane, other);
+            else
+                trafficLanesCollisions[trafficLane] = other;
 
             Vector3 cross = Vector3.Cross((trafficLane.transform.position - transform.position).normalized, transform.forward);
             LaneSide laneSide;
@@ -66,11 +72,11 @@ public class TrafficLaneController : MonoBehaviour
             if (carController.AheadTrafficLane == trafficLane)
                 return;
 
-            if (trafficLanesCollision.ContainsKey(trafficLane) == true)
+            if (trafficLanesCollisions.ContainsKey(trafficLane) == true)
             {
-                trafficLanesCollision[trafficLane].trafficLaneTriggeredColliders.Remove(other);
-                if (trafficLanesCollision[trafficLane].trafficLaneTriggeredColliders.Count == 0)
+                if (trafficLanesCollisions[trafficLane] == other)
                 {
+                    trafficLanesCollisions.Remove(trafficLane);
                     LaneSide laneSide;
                     if (carController.LeftTrafficLane == trafficLane)
                     {
@@ -86,7 +92,6 @@ public class TrafficLaneController : MonoBehaviour
                         return;
 
                     EventManager.Instance.OnTrafficLaneEnd.Invoke(laneSide);
-                    trafficLanesCollision.Remove(trafficLane);
                 }
             }
         }

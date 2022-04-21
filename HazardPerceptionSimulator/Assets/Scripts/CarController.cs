@@ -57,12 +57,16 @@ public class CarController : MonoBehaviour
                 Debug.Log("right");
                 break;
         }
-        targetPathPoint = AheadTrafficLane.GetPathPoint(0);
+
+        Collider trafficLaneClosestCollider = trafficLaneController.GetTrafficLaneCollider(AheadTrafficLane);
+
+        targetPathPoint = AheadTrafficLane.GetPathPoint(System.Convert.ToInt32(trafficLaneClosestCollider.name.Split('-')[1]));
 
         // очищаем боковые Traffic Lane
         LeftTrafficLane = null;
         RightTrafficLane = null;
 
+        // нужно менять стейт только после полного перестроения!!!
         trafficLaneController.ChangeColliderState(); // включаем обнаружение Traffic Lane
         isChangingTrafficLane = false;
     }

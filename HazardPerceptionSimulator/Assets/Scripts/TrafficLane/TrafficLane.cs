@@ -5,15 +5,13 @@ using UnityEngine;
 
 public class TrafficLane : MonoBehaviour
 {
-    [SerializeField] private List<Transform> pathPoints;
+    [SerializeField] private List<Transform> pathPoints = new List<Transform>();
     [Header("Colliders creation")]
     [SerializeField] private Transform collidersHolder;
     [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
 
     [SerializeField] [Range(0f, 1f)] private float startLaneColliderLenghtCoefficient = 0.6f;
     [SerializeField] [Range(0f, 1f)] private float endLaneColliderLenghtCoefficient = 0.1f;
-
-    // нужно будет убрать отсюда индекс, а хранить индекс в контроллере машины, который устанавливается при подключении к дороге (может быть 0, а может быть 5)
 
     private void Awake()
     {
@@ -32,10 +30,10 @@ public class TrafficLane : MonoBehaviour
         return pathPoints[index];
     }
 
-    public void AddCreatedPathPoint(Transform pathPoint)
+    public void UpdatePathPointsList()
     {
-        if (pathPoints.Contains(pathPoint) == false)
-            pathPoints.Add(pathPoint);
+        pathPoints.Clear();
+        pathPoints = GetComponentsInChildren<PathPoint>().Select(point => point.transform).ToList();
     }
 
     private void CreateStartLaneCollider(Transform startLanePoint, Transform connectedPoint)
@@ -53,7 +51,6 @@ public class TrafficLane : MonoBehaviour
 
         collider.rotation = Quaternion.LookRotation(connectedPoint.position - startLanePoint.position);
         collider.Rotate(Vector3.up, 90f);
-        //collider.position = startLanePoint.position + normalize * startRoadColliderSize.x / 2;
         collider.position = startLanePoint.position + normalize * boxCollider.size.x / 2;
         collider.position += Vector3.up;
     }
@@ -81,7 +78,7 @@ public class TrafficLane : MonoBehaviour
     {
         for (int i = 1; i < pathPoints.Count; i++)
         {
-            Transform collider = new GameObject($"Collider {i - 1}").transform;
+            Transform collider = new GameObject($"{i - 1}-{i}").transform;
             collider.parent = collidersHolder;
             collider.tag = "TrafficLane";
             BoxCollider boxCollider = collider.gameObject.AddComponent<BoxCollider>();
