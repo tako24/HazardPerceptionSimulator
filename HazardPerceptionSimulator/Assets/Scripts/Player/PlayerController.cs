@@ -10,18 +10,15 @@ public class PlayerController : CarController
     [SerializeField] [Tooltip("The traffic lane the player will be teleported to at the awake")]
     private TrafficLane startTrafficLane;
 
-    private TurnsSignalsController turnsSignalsController;
-
     private float direction = 0f;
     private float currentTime = 0f;
 
     protected override void Awake()
     {
         base.Awake();
-        turnsSignalsController = GetComponent<TurnsSignalsController>();
 
-        AheadTrafficLane = startTrafficLane;
-        targetPathPoint = AheadTrafficLane.GetPathPoint(currentPathPointIndex);
+        AheadLane = startTrafficLane;
+        targetPathPoint = AheadLane.GetPathPoint(currentPathPointIndex);
         if (targetPathPoint == null)
             enabled = false;
 
@@ -62,10 +59,10 @@ public class PlayerController : CarController
         currentTime = 0f;
     }
 
-    public void SwitchTrafficLane(string laneSideSignal)
+    public void SwitchTrafficLane(string laneSideSignal) // from UI turns signals
     {
         System.Enum.TryParse(laneSideSignal, out LaneSide laneSide);
-        turnsSignalsController.DisableTurnSignals(); // выключаем возможность поворота в другую сторону 
+        EventManager.Instance.DisableTurnsSignals.Invoke(); // выключаем возможность поворота
         SwitchTrafficLane(laneSide);
     }
 }

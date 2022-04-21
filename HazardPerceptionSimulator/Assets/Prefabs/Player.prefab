@@ -1,5 +1,65 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &673633721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 673633722}
+  - component: {fileID: 673633724}
+  - component: {fileID: 673633723}
+  m_Layer: 0
+  m_Name: TrafficLightController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &673633722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673633721}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 1.994}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4128585613324077312}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &673633724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673633721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 462d85674e0ec2342996fff454c0dad0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trafficLightCollidersTag: TrafficLight
+  isPlayer: 1
+--- !u!65 &673633723
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 673633721}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &217230377556385120
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,6 +499,7 @@ Transform:
   - {fileID: 5331339273094861124}
   - {fileID: 5331339272628695470}
   - {fileID: 5331339272331879150}
+  - {fileID: 673633722}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
@@ -472,6 +533,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 3
   rotationSpeed: 5
+  AheadLane: {fileID: 0}
+  RightLane: {fileID: 0}
+  LeftLane: {fileID: 0}
   changeSpeedTimer: 0.2
   speedChangeValue: 1
   startTrafficLane: {fileID: 0}
@@ -729,8 +793,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92975caed14a8d94a8c6b33057da44d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laneStartCollisionTag: LaneStart
-  laneEndCollisionTag: LaneEnd
+  trafficLaneCollidersTag: TrafficLane
+  isPlayer: 1
 --- !u!65 &5331339272331879144
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -742,7 +806,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 8.5, y: 2, z: 1}
+  m_Size: {x: 10, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5331339272628695469
 GameObject:

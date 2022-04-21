@@ -7,9 +7,9 @@ public enum LaneSide { Left, Ahead, Right }
 public class TrafficLaneController : MonoBehaviour
 {
     [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
-
+    [SerializeField] private bool isPlayer = false;
     private CarController carController;
-    private Dictionary<TrafficLane, Collider> trafficLanesCollisions = new ();
+    private Dictionary<Lane, Collider> trafficLanesCollisions = new ();
     private Collider trafficLanesDetectionCollider;
 
     private void Start()
@@ -18,12 +18,15 @@ public class TrafficLaneController : MonoBehaviour
         trafficLanesDetectionCollider = GetComponent<Collider>();
     }
 
-    public void ChangeColliderState()
+    public void ChangeColliderState(bool state)
     {
         trafficLanesDetectionCollider.enabled = !trafficLanesDetectionCollider.enabled;
+
+        if (state == false)
+            trafficLanesCollisions.Clear();
     }
 
-    public Collider GetTrafficLaneCollider(TrafficLane trafficLane)
+    public Collider GetTrafficLaneCollider(Lane trafficLane)
     {
         if (trafficLanesCollisions.ContainsKey(trafficLane))
             return trafficLanesCollisions[trafficLane];
@@ -36,7 +39,7 @@ public class TrafficLaneController : MonoBehaviour
         {
             TrafficLane trafficLane = other.GetComponentInParent<TrafficLane>();
 
-            if (carController.AheadTrafficLane == trafficLane)
+            if (carController.AheadLane == trafficLane)
                 return;
 
             if (trafficLanesCollisions.ContainsKey(trafficLane) == false)
@@ -44,22 +47,25 @@ public class TrafficLaneController : MonoBehaviour
             else
                 trafficLanesCollisions[trafficLane] = other;
 
+            // cross нужна проверка более гибкая, а не на начало traffic lane
             Vector3 cross = Vector3.Cross((trafficLane.transform.position - transform.position).normalized, transform.forward);
             LaneSide laneSide;
 
-            if (cross.y > 0.01f && carController.LeftTrafficLane != trafficLane)
+            if (cross.y > 0.01f && carController.LeftLane != trafficLane)
             {
-                carController.LeftTrafficLane = trafficLane;
+                carController.LeftLane = trafficLane;
                 laneSide = LaneSide.Left;
             }
-            else if (cross.y < -0.01f && carController.RightTrafficLane != trafficLane)
+            else if (cross.y < -0.01f && carController.RightLane != trafficLane)
             {
-                carController.RightTrafficLane = trafficLane;
+                carController.RightLane = trafficLane;
                 laneSide = LaneSide.Right;
             }
             else
                 return;
-            EventManager.Instance.OnTrafficLaneStart.Invoke(laneSide);
+
+            if (isPlayer)
+                EventManager.Instance.OnTrafficLaneStart.Invoke(laneSide);
         }
     }
 
@@ -69,7 +75,7 @@ public class TrafficLaneController : MonoBehaviour
         {
             TrafficLane trafficLane = other.GetComponentInParent<TrafficLane>();
 
-            if (carController.AheadTrafficLane == trafficLane)
+            if (carController.AheadLane == trafficLane || !trafficLanesDetectionCollider.enabled)
                 return;
 
             if (trafficLanesCollisions.ContainsKey(trafficLane) == true)
@@ -78,27 +84,23 @@ public class TrafficLaneController : MonoBehaviour
                 {
                     trafficLanesCollisions.Remove(trafficLane);
                     LaneSide laneSide;
-                    if (carController.LeftTrafficLane == trafficLane)
+                    if (carController.LeftLane == trafficLane)
                     {
                         laneSide = LaneSide.Left;
-                        carController.LeftTrafficLane = null;
+                        carController.LeftLane = null;
                     }
-                    else if (carController.RightTrafficLane == trafficLane)
+                    else if (carController.RightLane == trafficLane)
                     {
                         laneSide = LaneSide.Right;
-                        carController.RightTrafficLane = null;
+                        carController.RightLane = null;
                     }
                     else
                         return;
 
-                    EventManager.Instance.OnTrafficLaneEnd.Invoke(laneSide);
+                    if (isPlayer)
+                        EventManager.Instance.OnTrafficLaneEnd.Invoke(laneSide);
                 }
             }
         }
-    }
-
-    private class TrafficLaneTriggeredColliders
-    {
-        public List<Collider> trafficLaneTriggeredColliders = new List<Collider>();
     }
 }

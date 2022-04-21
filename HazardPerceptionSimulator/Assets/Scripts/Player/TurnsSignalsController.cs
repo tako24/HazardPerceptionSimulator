@@ -10,9 +10,10 @@ public class TurnsSignalsController : MonoBehaviour
     {
         EventManager.Instance.OnTrafficLaneStart += (laneSide) => TurnSignalClassifier(laneSide, true);
         EventManager.Instance.OnTrafficLaneEnd += (laneSide) => TurnSignalClassifier(laneSide, false);
+        EventManager.Instance.DisableTurnsSignals += DisableTurnSignals;
     }
 
-    public void DisableTurnSignals()
+    private void DisableTurnSignals()
     {
         rightTurnSignal.interactable = false;
         leftTurnSignal.interactable = false;

@@ -10,6 +10,7 @@ TagManager:
   - Grass
   - PathPoint
   - TrafficLane
+  - TrafficLightLane
   layers:
   - Default
   - TransparentFX
