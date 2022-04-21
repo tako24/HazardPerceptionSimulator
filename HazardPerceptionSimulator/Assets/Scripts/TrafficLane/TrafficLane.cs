@@ -8,27 +8,28 @@ public class TrafficLane : MonoBehaviour
     [SerializeField] private List<Transform> pathPoints;
     [Header("Colliders creation")]
     [SerializeField] private Transform collidersHolder;
+    [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
 
     [SerializeField] [Range(0f, 1f)] private float startLaneColliderLenghtCoefficient = 0.6f;
     [SerializeField] [Range(0f, 1f)] private float endLaneColliderLenghtCoefficient = 0.1f;
 
-    private int currentPathIndex = 0;
+    // нужно будет убрать отсюда индекс, а хранить индекс в контроллере машины, который устанавливается при подключении к дороге (может быть 0, а может быть 5)
 
     private void Awake()
     {
         if (pathPoints == null || pathPoints.Count < 2)
             return;
-        gameObject.GetComponents<BoxCollider>().ToList().ForEach(boxCollider => Destroy(boxCollider));
-        CreateStartLaneCollider(pathPoints[0], pathPoints[1]);
-        CreateEndLaneCollider(pathPoints[pathPoints.Count - 1], pathPoints[pathPoints.Count - 2]);
-        //CreateLaneColliders();
+        gameObject.GetComponentsInChildren<BoxCollider>().ToList().ForEach(boxCollider => Destroy(boxCollider));
+        CreateLaneColliders();
+        //CreateStartLaneCollider(pathPoints[0], pathPoints[1]);
+        //CreateEndLaneCollider(pathPoints[pathPoints.Count - 1], pathPoints[pathPoints.Count - 2]);
     }
 
-    public Transform GetNextPathPoint()
+    public Transform GetPathPoint(int index)
     {
-        if (currentPathIndex == pathPoints.Count)
+        if (index == pathPoints.Count)
             return null;
-        return pathPoints[currentPathIndex++];
+        return pathPoints[index];
     }
 
     public void AddCreatedPathPoint(Transform pathPoint)
@@ -47,7 +48,7 @@ public class TrafficLane : MonoBehaviour
         Vector3 normalize = Vector3.Normalize(connectedPoint.position - startLanePoint.position);
 
         BoxCollider boxCollider = collider.gameObject.AddComponent<BoxCollider>();
-        boxCollider.size = new Vector3(distance * startLaneColliderLenghtCoefficient, 1f, 1f);
+        boxCollider.size = new Vector3(distance * startLaneColliderLenghtCoefficient, 2f, 3f);
         boxCollider.isTrigger = true;
 
         collider.rotation = Quaternion.LookRotation(connectedPoint.position - startLanePoint.position);
@@ -67,7 +68,7 @@ public class TrafficLane : MonoBehaviour
         Vector3 normalize = Vector3.Normalize(connectedPoint.position - endLanePoint.position);
 
         BoxCollider boxCollider = collider.gameObject.AddComponent<BoxCollider>();
-        boxCollider.size = new Vector3(distance * endLaneColliderLenghtCoefficient, 1f, 1f);
+        boxCollider.size = new Vector3(distance * endLaneColliderLenghtCoefficient, 2f, 3f);
         boxCollider.isTrigger = true;
 
         collider.rotation = Quaternion.LookRotation(connectedPoint.position - endLanePoint.position);
@@ -82,8 +83,7 @@ public class TrafficLane : MonoBehaviour
         {
             Transform collider = new GameObject($"Collider {i - 1}").transform;
             collider.parent = collidersHolder;
-            //collider.tag = "Road";
-
+            collider.tag = "TrafficLane";
             BoxCollider boxCollider = collider.gameObject.AddComponent<BoxCollider>();
             float distance = Vector3.Distance(pathPoints[i - 1].position, pathPoints[i].position);
             Vector3 normalize = Vector3.Normalize(pathPoints[i].position - pathPoints[i - 1].position);

@@ -9,8 +9,7 @@ TagManager:
   - Wood
   - Grass
   - PathPoint
-  - LaneStart
-  - LaneEnd
+  - TrafficLane
   layers:
   - Default
   - TransparentFX

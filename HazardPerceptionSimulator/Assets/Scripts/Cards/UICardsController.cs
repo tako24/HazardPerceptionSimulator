@@ -32,8 +32,9 @@ public class UICardsController : MonoBehaviour
 
     public void CloseCardsPanel()
     {
-        gameObject.SetActive(false);
+        transform.parent.gameObject.SetActive(false);
     }
+
     public void PrevCard()
     {
         cardIndex--;
