@@ -10,13 +10,13 @@ public class TurnsSignalsController : MonoBehaviour
     {
         EventManager.Instance.OnTrafficLaneStart += (laneSide) => TurnSignalClassifier(laneSide, true);
         EventManager.Instance.OnTrafficLaneEnd += (laneSide) => TurnSignalClassifier(laneSide, false);
-        EventManager.Instance.DisableTurnsSignals += DisableTurnSignals;
+        EventManager.Instance.ChangeTurnsSignalsStates += ChangeTurnsSignalsStates;
     }
 
-    private void DisableTurnSignals()
+    private void ChangeTurnsSignalsStates(bool leftLane, bool aheadLane, bool rightLane)
     {
-        rightTurnSignal.interactable = false;
-        leftTurnSignal.interactable = false;
+        leftTurnSignal.interactable = leftLane;
+        rightTurnSignal.interactable = rightLane;
     }
 
     private void TurnSignalClassifier(LaneSide laneSide, bool state)
@@ -24,21 +24,11 @@ public class TurnsSignalsController : MonoBehaviour
         switch (laneSide)
         {
             case LaneSide.Left:
-                ChangeLeftTurnSignalState(state);
+                leftTurnSignal.interactable = state;
                 break;
             case LaneSide.Right:
-                ChangeRightTurnSignalState(state);
+                rightTurnSignal.interactable = state;
                 break;
         }
-    }
-
-    private void ChangeRightTurnSignalState(bool state)
-    {
-        rightTurnSignal.interactable = state;
-    }
-
-    private void ChangeLeftTurnSignalState(bool state)
-    {
-        leftTurnSignal.interactable = state;
     }
 }

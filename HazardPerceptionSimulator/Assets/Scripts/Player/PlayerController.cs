@@ -62,7 +62,7 @@ public class PlayerController : CarController
     public void SwitchTrafficLane(string laneSideSignal) // from UI turns signals
     {
         System.Enum.TryParse(laneSideSignal, out LaneSide laneSide);
-        EventManager.Instance.DisableTurnsSignals.Invoke(); // выключаем возможность поворота
+        EventManager.Instance.ChangeTurnsSignalsStates.Invoke(false, false, false); // выключаем возможность поворота
         SwitchTrafficLane(laneSide);
     }
 }

@@ -4,10 +4,13 @@ public class CarController : MonoBehaviour
 {
     [SerializeField] protected float speed = 3f;
     [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private bool isPlayer = false;
 
     public Lane AheadLane;
     public Lane RightLane;
     public Lane LeftLane;
+
+    public bool IsPassingTrafficLight { set { isPassingTrafficLight = value; } }
 
     protected Transform targetPathPoint = null;
     protected TrafficLaneController trafficLaneController;
@@ -46,8 +49,16 @@ public class CarController : MonoBehaviour
             Quaternion.LookRotation(targetPathPoint.position - transform.position), rotationSpeed * Time.fixedDeltaTime);
     }
 
-    public virtual void SwitchTrafficLane(LaneSide laneSide)
+    public void SwitchTrafficLane(LaneSide laneSide)
     {
+        if (isPassingTrafficLight)
+        {
+            AheadLane = laneSide == LaneSide.Left ? LeftLane : RightLane;
+            if (isPlayer)
+                EventManager.Instance.ChangeTurnsSignalsStates.Invoke(false, false, false);
+            return;
+        }
+
         isChangingTrafficLane = true;
         ChangeTrafficLaneColliderState(false); // выключаем обнаружение Traffic Lane
         AheadLane = laneSide == LaneSide.Left ? LeftLane : RightLane;
@@ -62,14 +73,15 @@ public class CarController : MonoBehaviour
         isChangingTrafficLane = false;
     }
 
-    public void ChangeTrafficLightState(bool state)
+    public void ChangeIsPassingTrafficLightState(bool state)
     {
         isPassingTrafficLight = !isPassingTrafficLight;
+    }
+
+    public void ChangeTrafficLightPassingState(bool state)
+    {
         ChangeTrafficLaneColliderState(!state); // изменяем обнаружение Traffic Lane
-
-        if (state == true)
-            currentPathPointIndex = 0;
-
+        currentPathPointIndex = 0;
         targetPathPoint = AheadLane.GetPathPoint(currentPathPointIndex);
     }
 
