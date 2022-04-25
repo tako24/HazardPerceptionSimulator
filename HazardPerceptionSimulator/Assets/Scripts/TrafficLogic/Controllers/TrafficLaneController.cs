@@ -20,10 +20,10 @@ public class TrafficLaneController : MonoBehaviour
 
     public void ChangeColliderState(bool state)
     {
-        trafficLanesDetectionCollider.enabled = !trafficLanesDetectionCollider.enabled;
-
-        if (state == false)
+        if (state == true)
             trafficLanesCollisions.Clear();
+
+        trafficLanesDetectionCollider.enabled = !trafficLanesDetectionCollider.enabled;
     }
 
     public Collider GetTrafficLaneCollider(Lane trafficLane)

@@ -6,6 +6,9 @@ public class TrafficLane : Lane
     [Header("Colliders creation")]
     [SerializeField] private Transform collidersHolder;
     [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
+    [SerializeField] private float colliderWidth = 1f;
+
+    public float ColliderWidth { get => colliderWidth; }
 
     protected virtual void Awake()
     {
@@ -27,7 +30,7 @@ public class TrafficLane : Lane
             Vector3 normalize = Vector3.Normalize(pathPoints[i].position - pathPoints[i - 1].position);
 
             BoxCollider boxCollider = collider.gameObject.AddComponent<BoxCollider>();
-            boxCollider.size = new Vector3(distance, 1f, 1f);
+            boxCollider.size = new Vector3(distance, 1f, colliderWidth);
             boxCollider.isTrigger = true;
 
             collider.position = pathPoints[i - 1].position + normalize * distance / 2;
