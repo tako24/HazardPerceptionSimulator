@@ -8,6 +8,7 @@ public class TrafficLaneController : MonoBehaviour
 {
     [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
     [SerializeField] private bool isPlayer = false;
+
     private CarController carController;
     private Dictionary<Lane, Collider> trafficLanesCollisions = new ();
     private Collider trafficLanesDetectionCollider;
@@ -23,7 +24,7 @@ public class TrafficLaneController : MonoBehaviour
         if (state == true)
             trafficLanesCollisions.Clear();
 
-        trafficLanesDetectionCollider.enabled = !trafficLanesDetectionCollider.enabled;
+        trafficLanesDetectionCollider.enabled = state;
     }
 
     public Collider GetTrafficLaneCollider(Lane trafficLane)
@@ -39,7 +40,7 @@ public class TrafficLaneController : MonoBehaviour
         {
             TrafficLane trafficLane = other.GetComponentInParent<TrafficLane>();
 
-            if (carController.AheadLane == trafficLane)
+            if (carController.AheadLane == trafficLane || carController.LeftLane == trafficLane || carController.RightLane == trafficLane)
                 return;
 
             if (trafficLanesCollisions.ContainsKey(trafficLane) == false)
@@ -47,22 +48,29 @@ public class TrafficLaneController : MonoBehaviour
             else
                 trafficLanesCollisions[trafficLane] = other;
 
-            // cross нужна проверка более гибкая, а не на начало traffic lane
-            Vector3 cross = Vector3.Cross((trafficLane.transform.position - transform.position).normalized, transform.forward);
+            Ray ray = new Ray(transform.position + transform.forward/2, transform.right);
+            RaycastHit hit;
             LaneSide laneSide;
 
-            if (cross.y > 0.01f && carController.LeftLane != trafficLane)
+            // попал справа
+            laneSide = other.Raycast(ray, out hit, 5f) ? LaneSide.Right : LaneSide.Left;
+
+            if (other.Raycast(ray, out hit, 10f)) // попал справа
             {
-                carController.LeftLane = trafficLane;
-                laneSide = LaneSide.Left;
-            }
-            else if (cross.y < -0.01f && carController.RightLane != trafficLane)
-            {
-                carController.RightLane = trafficLane;
                 laneSide = LaneSide.Right;
+                carController.RightLane = trafficLane;
             }
             else
-                return;
+            {
+                ray.direction = -transform.right;
+                if (other.Raycast(ray, out hit, 10f))
+                {
+                    laneSide = LaneSide.Left;
+                    carController.LeftLane = trafficLane;
+                }
+                else
+                    return;
+            }
 
             if (isPlayer)
                 EventManager.Instance.OnTrafficLaneStart.Invoke(laneSide);
@@ -102,5 +110,11 @@ public class TrafficLaneController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Debug.DrawRay(transform.position + transform.forward / 2, transform.right * 5f, Color.blue); 
+        Debug.DrawRay(transform.position + transform.forward / 2, -transform.right * 5f, Color.grey);
     }
 }

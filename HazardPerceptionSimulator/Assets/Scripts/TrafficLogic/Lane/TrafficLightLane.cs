@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrafficLightLane : Lane
 {
-    [SerializeField] private TrafficLane adjacentTrafficLane;
+    [SerializeField] private TrafficLane continuingTrafficLane;
 
-    public TrafficLane GetAdjacentTrafficLane() => adjacentTrafficLane;
+    public TrafficLane GetContinuingTrafficLane() => continuingTrafficLane;
 }

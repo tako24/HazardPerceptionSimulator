@@ -51,8 +51,8 @@ MonoBehaviour:
   - {fileID: 8694461288190301581}
   - {fileID: 8694461287461929667}
   collidersHolder: {fileID: 8694461286847786977}
-  startLaneColliderLenghtCoefficient: 0.6
-  endLaneColliderLenghtCoefficient: 0.1
+  trafficLaneCollidersTag: TrafficLane
+  colliderWidth: 1
 --- !u!1 &8694461286847786982
 GameObject:
   m_ObjectHideFlags: 0
@@ -97,7 +97,7 @@ GameObject:
   m_Layer: 0
   m_Name: PathPoint (1)
   m_TagString: PathPoint
-  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -141,7 +141,7 @@ GameObject:
   m_Layer: 0
   m_Name: PathPoint
   m_TagString: PathPoint
-  m_Icon: {fileID: 2488908585195742037, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1

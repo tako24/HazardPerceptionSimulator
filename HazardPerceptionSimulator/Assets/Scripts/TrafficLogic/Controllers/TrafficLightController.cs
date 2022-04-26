@@ -18,7 +18,7 @@ public class TrafficLightController : MonoBehaviour
 
     public void TrafficLightEndPassing()
     {
-        carController.AheadLane = trafficLightLane.GetAdjacentTrafficLane();
+        carController.AheadLane = trafficLightLane.GetContinuingTrafficLane();
         carController.IsPassingTrafficLight = false;
         carController.ChangeTrafficLightPassingState(false);
         trafficLightLane = null;
@@ -30,12 +30,8 @@ public class TrafficLightController : MonoBehaviour
         if (other.CompareTag(beginningTrafficLightColliderTag))
         {
             beginningTrafficLight = other.GetComponent<BeginningTrafficLight>();
+            carController.EnableIsPassingTrafficLightState();
 
-            // включить поворотники в соответствии с доступными путями.
-            // выбор пути из доступных по правилам поворотников.
-
-            //carController.AheadLane = trafficLightLane;
-            //carController.ChangeTrafficLightState(true);
             (bool, bool, bool) checkLanes = beginningTrafficLight.CheckTrafficLightLanes(); // left, ahead, right
 
             if (checkLanes.Item1)
@@ -44,8 +40,6 @@ public class TrafficLightController : MonoBehaviour
                 carController.AheadLane = beginningTrafficLight.GetAheadTrafficLightLane();
             if (checkLanes.Item3)
                 carController.RightLane = beginningTrafficLight.GetRightTrafficLightLane();
-
-            carController.ChangeIsPassingTrafficLightState(true);
 
             if (isPlayer)
                 EventManager.Instance.ChangeTurnsSignalsStates.Invoke(checkLanes.Item1, checkLanes.Item2, checkLanes.Item3);

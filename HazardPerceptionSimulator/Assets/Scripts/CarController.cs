@@ -32,12 +32,11 @@ public class CarController : MonoBehaviour
     {
         if (isChangingTrafficLane)
         {
-            // движение по функции
             transform.position = Vector3.MoveTowards(transform.position, endSwitchTrafficLanePosition, speed * Time.fixedDeltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation,
-                Quaternion.LookRotation(endSwitchTrafficLanePosition - transform.position), (speed / 3) * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation,
+                Quaternion.LookRotation(endSwitchTrafficLanePosition - transform.position), speed * 13.3f * Time.fixedDeltaTime);
 
-            if ((transform.position - endSwitchTrafficLanePosition).sqrMagnitude < 0.1f) // остановка перестроения. нужно по-другому
+            if ((transform.position - endSwitchTrafficLanePosition).sqrMagnitude < 0.1f)
             {
                 targetPathPoint = AheadLane.GetPathPoint(endSwitchTrafficLanePath);
                 ChangeTrafficLaneColliderState(true); // включаем обнаружение Traffic Lane
@@ -61,8 +60,8 @@ public class CarController : MonoBehaviour
         }
 
         transform.position = Vector3.MoveTowards(transform.position, targetPathPoint.position, speed * Time.fixedDeltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, 
-            Quaternion.LookRotation(targetPathPoint.position - transform.position), (speed / 3) * Time.fixedDeltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, 
+            Quaternion.LookRotation(targetPathPoint.position - transform.position), speed * 13.3f * Time.fixedDeltaTime);
     }
 
     public void SwitchTrafficLane(LaneSide laneSide)
@@ -74,8 +73,6 @@ public class CarController : MonoBehaviour
                 EventManager.Instance.ChangeTurnsSignalsStates.Invoke(false, false, false);
             return;
         }
-
-        // пустить луч в сторону новой полосы, понять путь и пройти по нему
 
         isChangingTrafficLane = true;
         ChangeTrafficLaneColliderState(false); // выключаем обнаружение Traffic Lane
@@ -96,9 +93,11 @@ public class CarController : MonoBehaviour
         }
     }
 
-    public void ChangeIsPassingTrafficLightState(bool state)
+    public void EnableIsPassingTrafficLightState()
     {
-        isPassingTrafficLight = !isPassingTrafficLight;
+        isChangingTrafficLane = false;
+        targetPathPoint = AheadLane.GetPathPoint(endSwitchTrafficLanePath);
+        isPassingTrafficLight = true;
     }
 
     public void ChangeTrafficLightPassingState(bool state)
@@ -119,11 +118,5 @@ public class CarController : MonoBehaviour
     {
         LeftLane = null;
         RightLane = null;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Debug.DrawRay(transform.position + Vector3.up, -transform.right * 5f, Color.red);
-        Debug.DrawRay(transform.position + Vector3.up, transform.right * 5f, Color.green);
     }
 }
