@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 673633724}
   - component: {fileID: 673633723}
   m_Layer: 0
-  m_Name: TrafficLightController
+  m_Name: TrafficLightDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462d85674e0ec2342996fff454c0dad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trafficLightCollidersTag: TrafficLight
+  beginningTrafficLightColliderTag: BeginningTrafficLight
   isPlayer: 1
 --- !u!65 &673633723
 BoxCollider:
@@ -532,7 +532,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 3
-  rotationSpeed: 5
+  switchTrafficLaneTime: 2
+  isPlayer: 1
   AheadLane: {fileID: 0}
   RightLane: {fileID: 0}
   LeftLane: {fileID: 0}
@@ -760,7 +761,7 @@ GameObject:
   - component: {fileID: 5331339272331879151}
   - component: {fileID: 5331339272331879144}
   m_Layer: 0
-  m_Name: TrafficLaneController
+  m_Name: TrafficLaneDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -11,6 +11,7 @@ TagManager:
   - PathPoint
   - TrafficLane
   - TrafficLightLane
+  - BeginningTrafficLight
   layers:
   - Default
   - TransparentFX

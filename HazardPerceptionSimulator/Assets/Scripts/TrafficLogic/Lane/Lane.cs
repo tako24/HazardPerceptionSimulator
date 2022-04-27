@@ -5,6 +5,9 @@ using UnityEngine;
 public class Lane : MonoBehaviour
 {
     [SerializeField] protected List<Transform> pathPoints = new List<Transform>();
+    [field: SerializeField] public bool isFarRightLane { get; private set; } = true;
+    [field: SerializeField] public bool isFarLeftLane { get; private set; } = true;
+
     private float laneLength = 0f;
 
     public float LaneLength { get => laneLength; }

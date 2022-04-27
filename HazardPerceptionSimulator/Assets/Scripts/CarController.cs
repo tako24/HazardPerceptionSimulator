@@ -13,8 +13,8 @@ public class CarController : MonoBehaviour
     public bool IsPassingTrafficLight { set { isPassingTrafficLight = value; } }
 
     protected Transform targetPathPoint = null;
-    protected TrafficLaneController trafficLaneController;
-    protected TrafficLightController trafficLightController;
+    protected TrafficLaneDetection trafficLaneController;
+    protected TrafficLightDetection trafficLightController;
     protected bool isChangingTrafficLane = false;
     protected bool isPassingTrafficLight = false;
     protected int currentPathPointIndex = 0;
@@ -24,8 +24,8 @@ public class CarController : MonoBehaviour
 
     protected virtual void Awake()
     {
-        trafficLaneController = GetComponentInChildren<TrafficLaneController>();
-        trafficLightController = GetComponentInChildren<TrafficLightController>();
+        trafficLaneController = GetComponentInChildren<TrafficLaneDetection>();
+        trafficLightController = GetComponentInChildren<TrafficLightDetection>();
     }
 
     private void FixedUpdate()

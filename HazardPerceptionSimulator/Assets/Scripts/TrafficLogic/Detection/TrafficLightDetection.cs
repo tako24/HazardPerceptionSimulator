@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrafficLightController : MonoBehaviour
+public class TrafficLightDetection : MonoBehaviour
 {
     [SerializeField] private string beginningTrafficLightColliderTag = "BeginningTrafficLight";
     [SerializeField] private bool isPlayer = false;
@@ -32,17 +32,12 @@ public class TrafficLightController : MonoBehaviour
             beginningTrafficLight = other.GetComponent<BeginningTrafficLight>();
             carController.EnableIsPassingTrafficLightState();
 
-            (bool, bool, bool) checkLanes = beginningTrafficLight.CheckTrafficLightLanes(); // left, ahead, right
-
-            if (checkLanes.Item1)
-                carController.LeftLane = beginningTrafficLight.GetLeftTrafficLightLane();
-            if (checkLanes.Item2)
-                carController.AheadLane = beginningTrafficLight.GetAheadTrafficLightLane();
-            if (checkLanes.Item3)
-                carController.RightLane = beginningTrafficLight.GetRightTrafficLightLane();
+            carController.LeftLane = beginningTrafficLight.GetLeftTrafficLightLane();
+            carController.AheadLane = beginningTrafficLight.GetAheadTrafficLightLane();
+            carController.RightLane = beginningTrafficLight.GetRightTrafficLightLane();
 
             if (isPlayer)
-                EventManager.Instance.ChangeTurnsSignalsStates.Invoke(checkLanes.Item1, checkLanes.Item2, checkLanes.Item3);
+                EventManager.Instance.ChangeTurnsSignalsStates.Invoke(carController.LeftLane, carController.AheadLane, carController.RightLane);
         }
     }
 
@@ -50,15 +45,15 @@ public class TrafficLightController : MonoBehaviour
     {
         if (other.CompareTag(beginningTrafficLightColliderTag))
         {
-            // к этому моменту уже должен быть выбран маршрут, т.к. сейчас он придет в действие
-
             if (isPlayer)
+            {
                 EventManager.Instance.ChangeTurnsSignalsStates.Invoke(false, false, false);
+                if (other.GetComponentInParent<TrafficLight>().CurrentTrafficLightState != TrafficLight.TrafficLightState.Green)
+                    EventManager.Instance.OnMistake(new Mistake("¬ыезд на запрещающий сигнал светофора"));
+            }
 
             trafficLightLane = (TrafficLightLane)carController.AheadLane;
-
             carController.ChangeTrafficLightPassingState(true);
-            //EventManager.Instance.DisableTurnsSignals.Invoke();
         }
     }
 }

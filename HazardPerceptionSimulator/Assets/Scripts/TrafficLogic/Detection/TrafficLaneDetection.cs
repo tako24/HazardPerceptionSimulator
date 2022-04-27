@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum LaneSide { Left, Ahead, Right }
 
-public class TrafficLaneController : MonoBehaviour
+public class TrafficLaneDetection : MonoBehaviour
 {
     [SerializeField] private string trafficLaneCollidersTag = "TrafficLane";
     [SerializeField] private bool isPlayer = false;
@@ -55,7 +55,7 @@ public class TrafficLaneController : MonoBehaviour
             // попал справа
             laneSide = other.Raycast(ray, out hit, 5f) ? LaneSide.Right : LaneSide.Left;
 
-            if (other.Raycast(ray, out hit, 10f)) // попал справа
+            if (!carController.AheadLane.isFarRightLane && other.Raycast(ray, out hit, 10f)) // попал справа
             {
                 laneSide = LaneSide.Right;
                 carController.RightLane = trafficLane;
@@ -63,7 +63,7 @@ public class TrafficLaneController : MonoBehaviour
             else
             {
                 ray.direction = -transform.right;
-                if (other.Raycast(ray, out hit, 10f))
+                if (!carController.AheadLane.isFarLeftLane && other.Raycast(ray, out hit, 10f)) // попал слева
                 {
                     laneSide = LaneSide.Left;
                     carController.LeftLane = trafficLane;
