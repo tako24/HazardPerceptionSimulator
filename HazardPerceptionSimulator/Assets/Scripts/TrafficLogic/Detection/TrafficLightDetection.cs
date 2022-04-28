@@ -48,7 +48,8 @@ public class TrafficLightDetection : MonoBehaviour
             if (isPlayer)
             {
                 EventManager.Instance.ChangeTurnsSignalsStates.Invoke(false, false, false);
-                if (other.GetComponentInParent<TrafficLight>().CurrentTrafficLightState != TrafficLight.TrafficLightState.Green)
+                TrafficLight trafficLight = other.GetComponentInParent<TrafficLight>();
+                if (trafficLight && trafficLight.CurrentTrafficLightState != TrafficLight.TrafficLightState.Green)
                     EventManager.Instance.OnMistake(new Mistake("Выезд на запрещающий сигнал светофора"));
             }
 

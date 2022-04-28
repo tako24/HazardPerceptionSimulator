@@ -1,4 +1,6 @@
 using UnityEngine;
+using TMPro;
+using System;
 
 public class PlayerController : CarController
 {
@@ -9,6 +11,8 @@ public class PlayerController : CarController
 
     [SerializeField] [Tooltip("The traffic lane the player will be teleported to at the awake")]
     private TrafficLane startTrafficLane;
+
+    [SerializeField] private TMP_Text speedText;
 
     private float direction = 0f;
     private float currentTime = 0f;
@@ -23,6 +27,7 @@ public class PlayerController : CarController
             enabled = false;
 
         transform.position = targetPathPoint.position;
+        speedText.text = Convert.ToString((int)(speed * 5)) + " κμ/χ";
     }
 
     private void Update()
@@ -35,11 +40,12 @@ public class PlayerController : CarController
         {
             currentTime = 0f;
             speed += direction;
-            if (speed < 0)
+            if (speed < 0.4)
             {
                 speed = 0f;
                 direction = 0f;
             }
+            speedText.text = Convert.ToString((int)(speed * 5)) + " κμ/χ";
         }
     }
 

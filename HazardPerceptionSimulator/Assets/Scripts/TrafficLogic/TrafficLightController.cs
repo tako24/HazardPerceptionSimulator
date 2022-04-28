@@ -32,10 +32,10 @@ public class TrafficLightController : MonoBehaviour
 
         while (true)
         {
-            yield return new WaitForSecondsRealtime(greenLightTime);
+            yield return new WaitForSeconds(greenLightTime);
             EnableTrafficLightsSignals(TrafficLight.TrafficLightState.Yellow);
 
-            yield return new WaitForSecondsRealtime(yellowLightTime);
+            yield return new WaitForSeconds(yellowLightTime);
             EnableTrafficLightsSignals(TrafficLight.TrafficLightState.Red);
 
             currentActiveTrafficLightIndex++;
@@ -46,7 +46,7 @@ public class TrafficLightController : MonoBehaviour
 
             EnableTrafficLightsSignals(TrafficLight.TrafficLightState.Yellow);
 
-            yield return new WaitForSecondsRealtime(yellowLightTime);
+            yield return new WaitForSeconds(yellowLightTime);
 
             EnableTrafficLightsSignals(TrafficLight.TrafficLightState.Green);
         }
