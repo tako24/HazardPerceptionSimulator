@@ -40,9 +40,14 @@ public class PlayerController : CarController
         {
             currentTime = 0f;
             speed += direction;
-            if (speed < 0.4)
+            if (speed < 0.4f)
             {
                 speed = 0f;
+                direction = 0f;
+            }
+            if (speed > maxSpeedInKmH / 5)
+            {
+                speed = maxSpeedInKmH / 5;
                 direction = 0f;
             }
             speedText.text = Convert.ToString((int)(speed * 5)) + " κμ/χ";

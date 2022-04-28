@@ -12,6 +12,7 @@ TagManager:
   - TrafficLane
   - TrafficLightLane
   - BeginningTrafficLight
+  - Tip
   layers:
   - Default
   - TransparentFX

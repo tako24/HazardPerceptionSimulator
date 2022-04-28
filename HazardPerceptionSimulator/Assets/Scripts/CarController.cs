@@ -3,6 +3,7 @@ using UnityEngine;
 public class CarController : MonoBehaviour
 {
     [SerializeField] protected float speed = 3f;
+    [SerializeField] protected float maxSpeedInKmH = 60f;
     [SerializeField] private float switchTrafficLaneTime = 2f;
     [SerializeField] private bool isPlayer = false;
 
