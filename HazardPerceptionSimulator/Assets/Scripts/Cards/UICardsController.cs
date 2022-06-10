@@ -11,7 +11,7 @@ public class UICardsController : MonoBehaviour
     [SerializeField] private Button closeButton;
     [SerializeField] private Button previousButton;
 
-    private List<CardInfo> cardsInfo;
+    [SerializeField] private List<CardInfo> cardsInfo;
     private int cardIndex = 0;
     private Action callback;
 
@@ -31,6 +31,22 @@ public class UICardsController : MonoBehaviour
         closeButton.interactable = !isHigher;
     }
 
+    private void Start()
+    {
+        if(cardsInfo == null)
+            return;
+        
+        cardIndex = 0;
+        uiCard.UpdateCardInfo(cardsInfo[cardIndex]);
+
+        bool isHigher = cardsInfo.Count > 1;
+
+        previousButton.gameObject.SetActive(isHigher);
+        nextButton.gameObject.SetActive(isHigher);
+        previousButton.interactable = false;
+        nextButton.interactable = isHigher;
+    }
+    
     public void NextCard()
     {        
         cardIndex++;
