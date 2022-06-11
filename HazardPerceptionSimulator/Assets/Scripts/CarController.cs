@@ -11,6 +11,7 @@ public class CarController : MonoBehaviour
     public Lane RightLane;
     public Lane LeftLane;
 
+    public float Speed => speed;
     public bool IsPassingTrafficLight { set { isPassingTrafficLight = value; } }
 
     protected Transform targetPathPoint = null;

@@ -5,11 +5,13 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using System.Linq;
+using UniRx;
+using System;
 
 public class TutorialLevel : Level
 {
     [Header("Tutorial level params")]
-    [SerializeField] private GameObject infoCanvas;
+    [SerializeField] private InfoCanvas infoCanvas;
     [SerializeField] private GameObject tutorialCanvas;
     [SerializeField] private GameObject step1Panel;
     [SerializeField] private GameObject step2Panel;
@@ -19,20 +21,15 @@ public class TutorialLevel : Level
     [SerializeField] private EventTrigger leftTurnButton;
     [SerializeField] private EventTrigger rightTurnButton;
 
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private TrafficLightController trafficLightControllerStep2;
+    [SerializeField] private TrafficLightController trafficLightControllerStep3;
+
     private UnityAction<BaseEventData> buttonListener;
 
-    protected override void Awake()
+    protected override void OnEnable()
     {
-        //gameCanvas.SetActive(false);
-        //cardsCanvas.SetActive(false);
-        //infoCanvas.SetActive(true);
-
-        increaseSpeedButton.gameObject.SetActive(false);
-        decreaseSpeedButton.gameObject.SetActive(false);
-        leftTurnButton.gameObject.SetActive(false);
-        rightTurnButton.gameObject.SetActive(false);
-        gameCanvas.SetActive(true);
-        base.Awake();
+        base.OnEnable();
         EnableStep1();
     }
 
@@ -46,6 +43,9 @@ public class TutorialLevel : Level
             case 3:
                 EnableStep3();
                 break;
+            case 4:
+                EnableStep4();
+                break;
             default:
                 break;
         }
@@ -53,11 +53,19 @@ public class TutorialLevel : Level
 
     private void EnableStep1()
     {
+        increaseSpeedButton.gameObject.SetActive(false);
+        decreaseSpeedButton.gameObject.SetActive(false);
+        leftTurnButton.gameObject.SetActive(false);
+        rightTurnButton.gameObject.SetActive(false);
+        gameCanvas.SetActive(true);
+        cardsCanvas.SetActive(false);
+
         Time.timeScale = 0f;
         buttonListener = (e) => DisableStep1();
         increaseSpeedButton.triggers.Where(trigger => trigger.eventID == EventTriggerType.PointerDown).First().callback.AddListener(buttonListener);
-        tutorialCanvas.SetActive(true);
         step1Panel.SetActive(true);
+        tutorialCanvas.SetActive(true);
+        infoCanvas.gameObject.SetActive(true);
         increaseSpeedButton.gameObject.SetActive(true);
     }
 
@@ -65,6 +73,7 @@ public class TutorialLevel : Level
     {
         increaseSpeedButton.triggers.Where(trigger => trigger.eventID == EventTriggerType.PointerDown).First().callback.RemoveListener(buttonListener);
         tutorialCanvas.SetActive(false);
+        infoCanvas.gameObject.SetActive(false);
         step1Panel.SetActive(false);
         Time.timeScale = 1f;
     }
@@ -74,8 +83,10 @@ public class TutorialLevel : Level
         Time.timeScale = 0f;
         buttonListener = (e) => DisableStep2();
         decreaseSpeedButton.triggers.Where(trigger => trigger.eventID == EventTriggerType.PointerDown).First().callback.AddListener(buttonListener);
-        tutorialCanvas.SetActive(true);
         step2Panel.SetActive(true);
+        tutorialCanvas.SetActive(true);
+        infoCanvas.UpdateInfoCanvas("Снижение скорости", "Впереди перекресток с красным сигналом светофора.\nДля снижения скорости зажмите кнопку - снизить скорость");
+        infoCanvas.gameObject.SetActive(true);
         decreaseSpeedButton.gameObject.SetActive(true);
     }
 
@@ -83,8 +94,21 @@ public class TutorialLevel : Level
     {
         decreaseSpeedButton.triggers.Where(trigger => trigger.eventID == EventTriggerType.PointerDown).First().callback.RemoveListener(buttonListener);
         tutorialCanvas.SetActive(false);
+        infoCanvas.gameObject.SetActive(false);
         step2Panel.SetActive(false);
         Time.timeScale = 1f;
+        IDisposable playerStop = null;
+        playerStop = Observable.EveryUpdate()
+            .SkipWhile(w => playerController.Speed > 0.5f)
+            .Finally(() =>
+            {
+                Observable.TimerFrame(5).Subscribe(s => trafficLightControllerStep2.enabled = false);
+            })
+            .Subscribe(s =>
+            {
+                trafficLightControllerStep2.enabled = true;
+                playerStop?.Dispose();
+            });
     }
 
     private void EnableStep3()
@@ -94,6 +118,8 @@ public class TutorialLevel : Level
         rightTurnButton.triggers.Where(trigger => trigger.eventID == EventTriggerType.PointerDown).First().callback.AddListener(buttonListener);
         tutorialCanvas.SetActive(true);
         step3Panel.SetActive(true);
+        infoCanvas.UpdateInfoCanvas("Поворот", "Для поворота на перекрестке нажмите на стрелочку");
+        infoCanvas.gameObject.SetActive(true);
         leftTurnButton.gameObject.SetActive(true);
         rightTurnButton.gameObject.SetActive(true);
     }
@@ -102,7 +128,28 @@ public class TutorialLevel : Level
     {
         rightTurnButton.triggers.Where(trigger => trigger.eventID == EventTriggerType.PointerDown).First().callback.RemoveListener(buttonListener);
         tutorialCanvas.SetActive(false);
+        infoCanvas.gameObject.SetActive(false);
         step3Panel.SetActive(false);
         Time.timeScale = 1f;
+        IDisposable playerStop = null;
+        playerStop = Observable.EveryUpdate()
+            .SkipWhile(w => playerController.Speed > 0.5f)
+            .Finally(() =>
+            {
+                Observable.TimerFrame(5).Subscribe(s => trafficLightControllerStep3.enabled = false);
+            })
+            .Subscribe(s =>
+            {
+                trafficLightControllerStep3.enabled = true;
+                playerStop?.Dispose();
+            });
+    }
+
+    private void EnableStep4()
+    {
+        Time.timeScale = 0f;
+        gameCanvas.SetActive(false);
+        infoCanvas.UpdateInfoCanvas("Конец обучения", "Поздравляю! Ты успешно прошёл обучение");
+        infoCanvas.gameObject.SetActive(true);
     }
 }
