@@ -1,6 +1,9 @@
+using System;
+
+[Serializable]
 public class Mistake
 {
-    public readonly string Description;
+    public string Description;
 
     public Mistake(string description)
     {

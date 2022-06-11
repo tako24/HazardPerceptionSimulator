@@ -16,6 +16,11 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Levels/LevelInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Levels/UILevelController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Statistics/JsonLoader.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Statistics/StatisticsController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Statistics/UIMistake.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.textmeshpro@3.0.6/Scripts/Runtime/TMPro_UGUI_Private.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -80,7 +85,7 @@
       <workItem from="1650176194506" duration="1279000" />
       <workItem from="1654493294185" duration="495000" />
       <workItem from="1654504224703" duration="827000" />
-      <workItem from="1654846363149" duration="4159000" />
+      <workItem from="1654846363149" duration="16027000" />
     </task>
     <servers />
   </component>
