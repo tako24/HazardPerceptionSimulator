@@ -14,7 +14,7 @@ public class Level : MonoBehaviour
 
     private UICardsController cardsController;
 
-    protected virtual void Awake()
+    protected virtual void OnEnable()
     {
         cardsController = cardsCanvas.GetComponentInChildren<UICardsController>();
         if (startCardsInfo.Count != 0)

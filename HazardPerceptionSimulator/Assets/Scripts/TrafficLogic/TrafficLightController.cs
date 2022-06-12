@@ -16,7 +16,7 @@ public class TrafficLightController : MonoBehaviour
 
     private int currentActiveTrafficLightIndex;
 
-    private void Awake()
+    private void OnEnable()
     {
         if (trafficLightSystemType == TrafficLightSystemType.Pair && trafficLights.Count % 2 != 0)
             throw new System.ArgumentException("For the paired inclusion of traffic lights, there must be an even number of them");
@@ -24,6 +24,11 @@ public class TrafficLightController : MonoBehaviour
             throw new System.ArgumentException("The traffic lights list cannot be empty");
 
         StartCoroutine(ChangeActiveTrafficLight());
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
     }
 
     private IEnumerator ChangeActiveTrafficLight()
